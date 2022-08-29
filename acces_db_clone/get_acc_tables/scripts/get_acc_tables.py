@@ -2,8 +2,6 @@ import pandas as pd
 import os
 import pyodbc
 
-#from base_fns import *
-
 paths = os.path.abspath(os.getcwd())
 
 def leer_paths(key, paths=paths):
@@ -24,6 +22,7 @@ def leer_paths(key, paths=paths):
                 df = pd.read_excel(file_path)
     
     return df[key][0]
+
 
 def crear_paths():
     '''
@@ -85,9 +84,7 @@ def get_acc_table_descr(acc_path,table):
 
     return df
 
-for file in os.listdir(os.getcwd()):
-    if 'path.xlsx' not in file: crear_paths()
-
+crear_paths()
 acc_file = leer_paths('acc_file')
 tables = leer_paths('tables')
 scripts = leer_paths('scripts')
@@ -99,12 +96,14 @@ for file in os.listdir(acc_file):
                 tb = get_acces_tablenames(file_path)
 
                 print('---- Creando '+ filename +' ----')
-                print_path = os.path.join(tables,filename + '.xlsx')
 
-                with pd.ExcelWriter(print_path) as writer:
+                for table in tb:
 
-                    for table in tb:
+                    print_path = os.path.join(tables,filename + '.xlsx')
+                    
 
+
+                    with pd.ExcelWriter(print_path) as writer:
                         df = get_acc_table_descr(file_path,table)
                         df.to_excel(writer,sheet_name=table,index=False)
 
